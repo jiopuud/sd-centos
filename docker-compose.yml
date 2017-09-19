@@ -1,0 +1,75 @@
+version: "2"
+services:
+    # 数据卷容器
+    dvc:
+        container_name: dvc
+        image: swoole-centos
+        privileged: true
+        command: /usr/sbin/init
+        volumes:
+            - D:/php-project/docker/data:/data
+        ports:
+            - "11022:22"
+
+    # MySQL 5.7: https://hub.docker.com/_/mysql/
+    mysql:
+        container_name: mysql
+        image: mysql:5.7
+        environment:
+            MYSQL_ROOT_PASSWORD: "1"
+            MYSQL_USER: "sd"
+            MYSQL_PASSWORD: "sd"
+            MYSQL_DATABASE: "sd"
+
+    # Redis 3.2.10: https://hub.docker.com/_/redis/
+    redis:
+        container_name: redis
+        image: redis:3.2.10
+
+    consul:
+        image: consul
+        container_name: consul
+        command: agent -ui -client 0.0.0.0 -server -bootstrap-expect 1
+        ports:
+            - "8500:8500"
+            - "8301:8301/udp"
+            - "8300:8300"
+            - "8302:8302/udp"
+            - "8600:8600/udp"
+
+    # SD框架阿里云内网registry-internal.cn-hangzhou.aliyuncs.com/youwoxing/sd
+    sd1:
+        container_name: sd1
+        image: swoole-centos
+        privileged: true
+        environment:
+            SD_NODE_NAME: "SD-1"
+            SD_CONFIG_DIR: "docker"
+        volumes_from:
+            - dvc
+        command: /usr/sbin/init
+        links:
+            - consul
+            - mysql
+            - redis
+        ports:
+            - "11001:8081"
+            - "11023:22"
+            
+    sd2:
+        container_name: sd2
+        image: swoole-centos
+        privileged: true
+        environment:
+            SD_NODE_NAME: "SD-2"
+            SD_CONFIG_DIR: "docker"
+        volumes_from:
+            - dvc
+        command: /usr/sbin/init
+        links:
+            - consul
+            - mysql
+            - redis
+        ports:
+            - "11002:8081"
+            - "11024:22"   

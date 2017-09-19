@@ -1,0 +1,16 @@
+{
+  "require": {
+    "tmtbe/swooledistributed":">=2.5.0",
+    "phpunit/phpunit": "6.*",
+    "eaglewu/swoole-ide-helper":"dev-master",
+    "squizlabs/php_codesniffer":"*",
+    "phpmd/phpmd":"*",
+    "almasaeed2010/adminlte": "*"
+  },
+ "autoload": {
+    "psr-4": {
+      "app\\": "src/app",
+      "test\\": "src/test"
+    }
+  }
+}
