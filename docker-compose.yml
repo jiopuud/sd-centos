@@ -3,11 +3,11 @@ services:
     # 数据卷容器
     dvc:
         container_name: dvc
-        image: swoole-centos
+        image: swoole-centos:1.0.0
         privileged: true
         command: /usr/sbin/init
         volumes:
-            - D:/php-project/docker/data:/data
+            - D:/php-project/docker/data/sd/src:/data/sd/src
         ports:
             - "11022:22"
 
@@ -40,14 +40,14 @@ services:
     # SD框架阿里云内网registry-internal.cn-hangzhou.aliyuncs.com/youwoxing/sd
     sd1:
         container_name: sd1
-        image: swoole-centos
+        image: sd-centos:1.0.0
         privileged: true
+        command: /usr/sbin/init
         environment:
-            SD_NODE_NAME: "SD-1"
-            SD_CONFIG_DIR: "docker"
+            - SD_NODE_NAME=SD-1
+            - SD_CONFIG_DIR=sd1
         volumes_from:
             - dvc
-        command: /usr/sbin/init
         links:
             - consul
             - mysql
@@ -58,14 +58,14 @@ services:
             
     sd2:
         container_name: sd2
-        image: swoole-centos
+        image: sd-centos:1.0.0
         privileged: true
+        command: /usr/sbin/init
         environment:
-            SD_NODE_NAME: "SD-2"
-            SD_CONFIG_DIR: "docker"
+            - SD_NODE_NAME=SD-2
+            - SD_CONFIG_DIR=sd2
         volumes_from:
             - dvc
-        command: /usr/sbin/init
         links:
             - consul
             - mysql
